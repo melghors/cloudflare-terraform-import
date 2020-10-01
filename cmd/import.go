@@ -30,13 +30,17 @@ var importCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		tf, err := os.Create(fmt.Sprintf("import-%s.tf", args[0]))
+		if _, err := os.Stat(args[0]); os.IsNotExist(err) {
+			os.Mkdir(args[0], 0755)
+		}
+
+		tf, err := os.Create(fmt.Sprintf("%s/import-%s.tf", args[0], args[0]))
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		sh, err := os.Create(fmt.Sprintf("import-%s.sh", args[0]))
+		sh, err := os.Create(fmt.Sprintf("%s/import-%s.sh", args[0], args[0]))
 
 		if err != nil {
 			log.Fatal(err)

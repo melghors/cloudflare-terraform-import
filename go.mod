@@ -1,5 +1,7 @@
 module github.com/emgag/cloudflare-terraform-import
 
+go 1.14
+
 require (
 	github.com/cloudflare/cloudflare-go v0.8.5
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
