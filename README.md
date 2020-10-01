@@ -4,6 +4,28 @@
 
 (Only tested with A, CAA, CNAME, MX, TXT records so far) 
 
+## usage
+
+### import all zones of your cf account:
+
+export CF_API_EMAIL="example@gmail.com"                                  
+export CF_API_KEY="your-api-key"
+./cti zones all
+
+zones
+├── zones.sh
+└── zones.tf
+
+### import dns records of specific zone:
+
+export CF_API_EMAIL="example@gmail.com"                                  
+export CF_API_KEY="your-api-key"
+./cti import test123.com
+
+test123.com
+├── records-test123.com.sh
+└── records-test123.com.tf
+
 ## build & run
 
 Requires Go >= 1.11

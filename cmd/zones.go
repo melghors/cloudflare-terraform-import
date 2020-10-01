@@ -10,12 +10,12 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(importCmd)
+	rootCmd.AddCommand(importZonesCmd)
 }
 
-var importCmd = &cobra.Command{
-	Use:   "import <zone>",
-	Short: "Generate import files for zone",
+var importZonesCmd = &cobra.Command{
+	Use:   "zones",
+	Short: "Generate import zones files for zone",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		api, err := cloudflare.New(os.Getenv("CF_API_KEY"), os.Getenv("CF_API_EMAIL"))
@@ -24,32 +24,32 @@ var importCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		e := dns.NewExporter(api)
+		e := dns.NewZonesExporter(api)
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		if _, err := os.Stat(args[0]); os.IsNotExist(err) {
-			os.Mkdir(args[0], 0755)
+			os.Mkdir("zones", 0755)
 		}
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		tf, err := os.Create(fmt.Sprintf("%s/records-%s.tf", args[0], args[0]))
+		tf, err := os.Create(fmt.Sprintf("zones/zones.tf"))
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		sh, err := os.Create(fmt.Sprintf("%s/records-%s.sh", args[0], args[0]))
+		sh, err := os.Create(fmt.Sprintf("zones/zones.sh"))
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		e.DumpZone(args[0], tf, sh)
+		e.DumpZones(tf, sh)
 	},
 }
