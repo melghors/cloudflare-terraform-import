@@ -11,8 +11,8 @@ import (
 
 var recordTemplate = `
 resource "cloudflare_record" "{{ .ResourceName }}" {
-  // record id: {{ .Zone }}/{{ .RR.ID }}
-  domain = "{{ .Zone }}"
+	// record id: {{ .Zone }}/{{ .RR.ID }}
+	zone_id = "{{ .ZoneId }}"
   name   = "{{ .RR.Name | stripdomain }}"
   type   = "{{ .RR.Type }}"
   {{ if eq .RR.Type "CAA" }}data = {
@@ -80,16 +80,17 @@ func (e *Exporter) DumpZone(zone string, tfWriter io.Writer, shWriter io.Writer)
 		t = util.ToResourceName(t)
 
 		err := tmpl.Execute(tfWriter, struct {
+			ZoneId	string
 			Zone         string
 			RR           cloudflare.DNSRecord
 			ResourceName string
-		}{zone, r, t})
+		}{id, zone, r, t})
 
 		if err != nil {
 			return err
 		}
 
-		fmt.Fprintf(shWriter, "terraform import cloudflare_record.%s %s/%s\n", t, zone, r.ID)
+		fmt.Fprintf(shWriter, "terraform import cloudflare_record.%s %s/%s\n", t, id, r.ID)
 	}
 
 	return nil
